@@ -1,0 +1,71 @@
+{
+    "dataRoles": [
+        {
+            "name": "category",
+            "kind": "Grouping",
+            "displayName": "Style Field"
+        },
+        {
+            "name": "latitude",
+            "kind": "Grouping",
+            "displayName": "Latitude"
+        },
+        {
+            "name": "longitude",
+            "kind": "Grouping",
+            "displayName": "Longitude"
+        },
+        {
+            "name": "tooltip",
+            "kind": "Grouping",
+            "displayName": "Tooltip Fields"
+        }
+    ],
+    "dataViewMappings": [{
+        "table": {
+            "rows": {
+                "select": [
+                    {
+                        "for": {"in": "category"}
+                    },
+                    {
+                        "for": {"in": "latitude"}
+                    },
+                    {
+                        "for": {"in": "longitude"}
+                    },
+                    {
+                        "for": {"in": "tooltip"}
+                    }
+                ]
+            }
+        }
+    }],
+    "objects": {
+        "general": {
+            "displayName": "Map Options",
+            "properties": {
+                "pointFill": {
+                    "type": { "fill": { "solid": { "color": true } } },
+                    "displayName": "Point color"
+                },
+                "pointRadius": {
+                    "type": { "numeric": true },
+                    "displayName": "Point radius"
+                },
+                "lineFill": {
+                    "type": { "fill": { "solid": { "color": true } } },
+                    "displayName": "Line color"
+                },
+                "lineWidth": {
+                    "type": { "numeric": true },
+                    "displayName": "Line width"
+                },
+                "polygonFill": {
+                    "type": { "fill": { "solid": { "color": true } } },
+                    "displayName": "Polygon color"
+                }
+            }
+        }
+    }
+}
