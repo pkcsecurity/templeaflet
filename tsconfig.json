@@ -9,10 +9,10 @@
   },
   "files": [
     ".api/v1.10.0/PowerBI-visuals.d.ts",
-    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.d.ts",
     "node_modules/@types/d3/index.d.ts",
     "node_modules/@types/leaflet/index.d.ts",
     "node_modules/d3/build/d3.min.js",
+    "node_modules/d3-scale-chromatic/dist/d3-scale-chromatic.min.js",
     "node_modules/leaflet/dist/leaflet.js",
     "src/visual.ts"
   ]

@@ -16,6 +16,11 @@
             "displayName": "Longitude"
         },
         {
+            "name": "thumbnail",
+            "kind": "Grouping",
+            "displayName": "Thumbnail"
+        },
+        {
             "name": "tooltip",
             "kind": "Grouping",
             "displayName": "Tooltip Fields"
@@ -24,6 +29,11 @@
     "dataViewMappings": [{
         "table": {
             "rows": {
+                "dataReductionAlgorithm": {
+                      "top": {
+                          "count": 30000
+                      }
+                    },
                 "select": [
                     {
                         "for": {"in": "category"}
@@ -33,6 +43,9 @@
                     },
                     {
                         "for": {"in": "longitude"}
+                    },
+                    {
+                        "for": {"in": "thumbnail"}
                     },
                     {
                         "for": {"in": "tooltip"}

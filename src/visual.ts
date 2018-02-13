@@ -36,9 +36,8 @@ module powerbi.extensibility.visual {
         private basemap: L.TileLayer;
         private markerLayer: L.LayerGroup<L.CircleMarker>;
 
-        constructor(options: VisualConstructorOptions) {
-            console.log('constructor called');
 
+        constructor(options: VisualConstructorOptions) {
             let mapDiv = document.createElement('div');
             mapDiv.setAttribute('id', 'map');
             mapDiv.style.height = '720px';
@@ -57,13 +56,27 @@ module powerbi.extensibility.visual {
         }
 
         public static converter(dataView: DataView) {
+            console.log(dataView);
             const {columns, rows} = dataView.table;
-            const c10 = d3.scaleOrdinal(d3.schemeCategory10);
+            console.log(d3);
+            const c10 = d3.scaleOrdinal(['green', 'red', 'yellow']);
 
             const datas = rows.map(function (row, idx) {
                 let data = row.reduce(function (d, v, i) {
-                    const role = Object.keys(columns[i].roles)[0]
-                    d[role] = v;
+                    const role = Object.keys(columns[i].roles)[0];
+
+                    if (role == 'tooltip') {
+                        if(!d[role]) {
+                            d[role] = [v];
+                        }
+                        else {
+                            d[role] = [...d[role], v];
+                        }
+                    }
+                    else {
+                        d[role] = v;
+                    }
+
                     return d;
                 }, {});
                 
@@ -75,9 +88,23 @@ module powerbi.extensibility.visual {
             return datas;
         }
 
+        public static popupStyle(arr: [any], thumbnail: string) {
+            const div = document.createElement("div");
+            const img = document.createElement("img");
+            img.setAttribute("data-src", thumbnail);
+            img.setAttribute("style", "height:60px;");
+            img.setAttribute("class", "lazy");
+            div.appendChild(img);
+            for (const v of arr) {
+                const p = document.createElement("p");
+                p.textContent = v;
+                div.appendChild(p);
+            }
+
+            return div;
+        }
+
         public update(options: VisualUpdateOptions) {
-            console.log('update called');
-            
             let mapEl = document.getElementById('map');
             const height = options.viewport.height + 'px';
             const width = options.viewport.width + 'px';
@@ -93,19 +120,25 @@ module powerbi.extensibility.visual {
             if (this.markerLayer) this.map.removeLayer(this.markerLayer);
 
             this.dataView = options.dataViews[0];
+            console.log("dv length:", this.dataView.table.rows.length);
             const data = Visual.converter(this.dataView);
+            console.log("length:", data.length);
+
+            console.log(data[0]);
 
             const markers = data.map(function (d) {
                 const latlng = L.latLng([d['latitude'], d['longitude']]);
-                let marker = L.circleMarker(latlng, {color: d['color'], fillOpacity: 1});
+                const marker = L.circleMarker(latlng, {color: d['color'], fillOpacity: 1});
                 marker.setRadius(1);
 
                 const category = d['category'] ? d['category'] : 'NA';
-                marker.bindPopup(d['tooltip'] + ' : ' + category);
-                marker.on('mouseover', function (evt) {
-                    marker.openPopup();
+                marker.bindPopup(Visual.popupStyle(d['tooltip'], d['thumbnail']));
+                marker.on('popupopen', (x) => {
+                        const popupEl = x.popup.getContent();
+                        const imgEl = popupEl.querySelector("img");
+                        imgEl.src = imgEl.getAttribute("data-src");
                 });
-                
+
                 return marker;
             });
 
