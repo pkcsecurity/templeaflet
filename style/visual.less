@@ -1,11 +1,42 @@
 @import (less) "node_modules/leaflet/dist/leaflet.css";
 
-p {
-    font-size: 20px;
-    font-weight: bold;
-    em {
-        background: yellow;
-        padding: 5px;
-        
+.popup-container {
+    width: 300px;
+    height: 110px;
+    position: relative;
+    box-sizing: border-box;
+
+    &>* {
+        margin: 0;
+        padding: 0;
+    }
+
+    .popup-container__image {
+        position: absolute;
+        height: 100px;
+        width: 100px;
+        top: 0;
+        left: 0;
+
+        img {
+            height:62px;
+            width: 62px;
+            border-radius: 3px;
+        }
+    }
+
+    .popup-container__desc {
+        position: absolute;
+        height: 100px;
+        width: 200px;
+        top: 0;
+        right: 0;
+
+        p {
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            line-height: 24px;
+        }
     }
 }

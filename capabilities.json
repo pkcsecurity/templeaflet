@@ -21,6 +21,11 @@
             "displayName": "Thumbnail"
         },
         {
+            "name": "shape",
+            "kind": "Grouping",
+            "displayName": "Shape (Optional)"
+        },
+        {
             "name": "tooltip",
             "kind": "Grouping",
             "displayName": "Tooltip Fields"
@@ -46,6 +51,9 @@
                     },
                     {
                         "for": {"in": "thumbnail"}
+                    },
+                    {
+                        "for": {"in": "shape"}
                     },
                     {
                         "for": {"in": "tooltip"}

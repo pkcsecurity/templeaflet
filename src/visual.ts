@@ -36,7 +36,6 @@ module powerbi.extensibility.visual {
         private basemap: L.TileLayer;
         private markerLayer: L.LayerGroup<L.CircleMarker>;
 
-
         constructor(options: VisualConstructorOptions) {
             let mapDiv = document.createElement('div');
             mapDiv.setAttribute('id', 'map');
@@ -59,18 +58,19 @@ module powerbi.extensibility.visual {
             console.log(dataView);
             const {columns, rows} = dataView.table;
             console.log(d3);
-            const c10 = d3.scaleOrdinal(['green', 'red', 'yellow']);
+            const c3 = d3.scaleOrdinal(['#951a21', '#de913b', '#5b8943']);
 
             const datas = rows.map(function (row, idx) {
                 let data = row.reduce(function (d, v, i) {
                     const role = Object.keys(columns[i].roles)[0];
+                    const displayName = columns[i].displayName;
 
                     if (role == 'tooltip') {
                         if(!d[role]) {
-                            d[role] = [v];
+                            d[role] = [displayName + ": " + v];
                         }
                         else {
-                            d[role] = [...d[role], v];
+                            d[role] = [...d[role], displayName + ": " + v];
                         }
                     }
                     else {
@@ -80,7 +80,7 @@ module powerbi.extensibility.visual {
                     return d;
                 }, {});
                 
-                data['color'] = c10(data['category']);
+                data['color'] = c3(data['category']);
 
                 return data;
             });
@@ -89,19 +89,27 @@ module powerbi.extensibility.visual {
         }
 
         public static popupStyle(arr: [any], thumbnail: string) {
-            const div = document.createElement("div");
+            const root = document.createElement("div");
+            const image = document.createElement("div");
+            const desc = document.createElement("div");
+            root.setAttribute("class", "popup-container");
+            image.setAttribute("class", "popup-container__image");
+            desc.setAttribute("class", "popup-container__desc");
+
+            root.appendChild(image);
+            root.appendChild(desc);
+
             const img = document.createElement("img");
+            img.setAttribute("class", "thumbnail lazy");
             img.setAttribute("data-src", thumbnail);
-            img.setAttribute("style", "height:60px;");
-            img.setAttribute("class", "lazy");
-            div.appendChild(img);
+            image.appendChild(img);
             for (const v of arr) {
                 const p = document.createElement("p");
                 p.textContent = v;
-                div.appendChild(p);
+                desc.appendChild(p);
             }
 
-            return div;
+            return root;
         }
 
         public update(options: VisualUpdateOptions) {
