@@ -27,13 +27,11 @@
 module powerbi.extensibility.visual {
 
     var L = window['L'];
-    var d3 = window['d3'];
 
     "use strict";
     export class Visual implements IVisual {
         private dataView: DataView;
         private map: L.Map;
-        private basemap: L.TileLayer;
         private markerLayer: L.LayerGroup<L.CircleMarker>;
 
         constructor(options: VisualConstructorOptions) {
@@ -43,22 +41,46 @@ module powerbi.extensibility.visual {
 
             options.element.appendChild(mapDiv);
 
-            var attribution ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-            this.basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: attribution});
+            // OSM Version
+            //var attribution ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+            //var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: attribution});
+
+            // Mapbox Version
+            /*var attribution = '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
+
+            var streets = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.{format}?access_token={accessToken}', {
+                id: 'mapbox.run-bike-hike',
+                format: 'png',
+                attribution: attribution,
+                accessToken: 'TOKEN_GOES_HERE'
+            });*/
+
+            // ESRI Version
+            var streets =L.esri.basemapLayer('Streets');
 
             this.map = L.map('map', {
                 center: new L.LatLng(25, 0),
-                zoom: 2
+                zoom: 2,
+                layers: [streets],
             });
+        }
 
-            this.map.addLayer(this.basemap);
+        private static colorSPI(category: any) {
+            if (category > 1) {
+                return '#5b8943';
+            }
+            else if (category < 1) {
+                return '#951a21';
+            }
+            else {
+                return '#de913b';
+            }
+
         }
 
         public static converter(dataView: DataView) {
             console.log(dataView);
             const {columns, rows} = dataView.table;
-            console.log(d3);
-            const c3 = d3.scaleOrdinal(['#951a21', '#de913b', '#5b8943']);
 
             const datas = rows.map(function (row, idx) {
                 let data = row.reduce(function (d, v, i) {
@@ -80,7 +102,7 @@ module powerbi.extensibility.visual {
                     return d;
                 }, {});
                 
-                data['color'] = c3(data['category']);
+                data['color'] = Visual.colorSPI(data['category']);
 
                 return data;
             });
